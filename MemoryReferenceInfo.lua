@@ -334,6 +334,17 @@ local function CollectObjectReferenceInMemory(strName, cObject, cDumpInfoContain
 		if cMt then
 			CollectObjectReferenceInMemory(strName ..".[userdata:metatable]", cMt, cDumpInfoContainer)
 		end
+	else
+		-- For "number", "string" and "boolean".
+
+		-- Add reference and name.
+		cRefInfoContainer[cObject] = (cRefInfoContainer[cObject] and (cRefInfoContainer[cObject] + 1)) or 1
+		if cNameInfoContainer[cObject] then
+			return
+		end
+
+		-- Set name.
+		cNameInfoContainer[cObject] = strName .. "[" .. strType .. ":" .. tostring(cObject) .. "]"
 	end
 end
 
