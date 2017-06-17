@@ -288,9 +288,12 @@ local function CollectObjectReferenceInMemory(strName, cObject, cDumpInfoContain
 		end
 
 		-- Dump environment table.
-		local cEnv = debug.getfenv(cObject)
-		if cEnv then
-			CollectObjectReferenceInMemory(strName ..".[function:environment]", cEnv, cDumpInfoContainer)
+		local getfenv = debug.getfenv
+		if getfenv then
+			local cEnv = getfenv(cObject)
+			if cEnv then
+				CollectObjectReferenceInMemory(strName ..".[function:environment]", cEnv, cDumpInfoContainer)
+			end
 		end
 	elseif "thread" == strType then
 		-- Add reference and name.
@@ -303,9 +306,12 @@ local function CollectObjectReferenceInMemory(strName, cObject, cDumpInfoContain
 		cNameInfoContainer[cObject] = strName
 
 		-- Dump environment table.
-		local cEnv = debug.getfenv(cObject)
-		if cEnv then
-			CollectObjectReferenceInMemory(strName ..".[thread:environment]", cEnv, cDumpInfoContainer)
+		local getfenv = debug.getfenv
+		if getfenv then
+			local cEnv = getfenv(cObject)
+			if cEnv then
+				CollectObjectReferenceInMemory(strName ..".[thread:environment]", cEnv, cDumpInfoContainer)
+			end
 		end
 
 		-- Dump metatable.
@@ -324,9 +330,12 @@ local function CollectObjectReferenceInMemory(strName, cObject, cDumpInfoContain
 		cNameInfoContainer[cObject] = strName
 
 		-- Dump environment table.
-		local cEnv = debug.getfenv(cObject)
-		if cEnv then
-			CollectObjectReferenceInMemory(strName ..".[userdata:environment]", cEnv, cDumpInfoContainer)
+		local getfenv = debug.getfenv
+		if getfenv then
+			local cEnv = getfenv(cObject)
+			if cEnv then
+				CollectObjectReferenceInMemory(strName ..".[userdata:environment]", cEnv, cDumpInfoContainer)
+			end
 		end
 
 		-- Dump metatable.
@@ -516,9 +525,12 @@ local function CollectSingleObjectReferenceInMemory(strName, cObject, cDumpInfoC
 		end
 
 		-- Dump environment table.
-		local cEnv = debug.getfenv(cObject)
-		if cEnv then
-			CollectSingleObjectReferenceInMemory(strName ..".[function:environment]", cEnv, cDumpInfoContainer)
+		local getfenv = debug.getfenv
+		if getfenv then
+			local cEnv = getfenv(cObject)
+			if cEnv then
+				CollectSingleObjectReferenceInMemory(strName ..".[function:environment]", cEnv, cDumpInfoContainer)
+			end
 		end
 	elseif "thread" == strType then
 		-- Check if the specified object.
@@ -535,9 +547,12 @@ local function CollectSingleObjectReferenceInMemory(strName, cObject, cDumpInfoC
 		cAccessTag[cObject] = true
 
 		-- Dump environment table.
-		local cEnv = debug.getfenv(cObject)
-		if cEnv then
-			CollectSingleObjectReferenceInMemory(strName ..".[thread:environment]", cEnv, cDumpInfoContainer)
+		local getfenv = debug.getfenv
+		if getfenv then
+			local cEnv = getfenv(cObject)
+			if cEnv then
+				CollectSingleObjectReferenceInMemory(strName ..".[thread:environment]", cEnv, cDumpInfoContainer)
+			end
 		end
 
 		-- Dump metatable.
@@ -560,9 +575,12 @@ local function CollectSingleObjectReferenceInMemory(strName, cObject, cDumpInfoC
 		cAccessTag[cObject] = true
 
 		-- Dump environment table.
-		local cEnv = debug.getfenv(cObject)
-		if cEnv then
-			CollectSingleObjectReferenceInMemory(strName ..".[userdata:environment]", cEnv, cDumpInfoContainer)
+		local getfenv = debug.getfenv
+		if getfenv then
+			local cEnv = getfenv(cObject)
+			if cEnv then
+				CollectSingleObjectReferenceInMemory(strName ..".[userdata:environment]", cEnv, cDumpInfoContainer)
+			end
 		end
 
 		-- Dump metatable.

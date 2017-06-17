@@ -5,4 +5,4 @@ About this code: http://www.cnblogs.com/yaukey/p/unity_lua_memory_leak_trace.htm
 
 Just run "Example.lua" for a quick start.
 
-Lua 5.3 is currently not support.
+Compatible with Lua 5.1, 5.2 and 5.3.
