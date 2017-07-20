@@ -748,7 +748,8 @@ local function OutputMemorySnapshot(strSavePath, strExtraFileName, nMaxRescords,
 				if (i <= nMaxRescords) then
                     if "string" == type(v) then
                         local strOrgString = tostring(v)
-                        if ("string: \"" ~= string.sub(strOrgString, 1, 9)) or ("\"" ~= string.sub(strOrgString, -1)) then
+                        local nPattenBegin, nPattenEnd = string.find(strOrgString, "string: \".*\"")
+                        if ((not cDumpInfoResultsBase) and ((nil == nPattenBegin) or (nil == nPattenEnd))) then
                             local strRepString = string.gsub(strOrgString, "([\n\r])", "\\n")
                             cOutputer("string: \"" .. strRepString .. "\"\t" .. cNameInfo[v] .. "\t" .. tostring(cRefInfo[v]) .. "\n")
                         else
@@ -761,7 +762,8 @@ local function OutputMemorySnapshot(strSavePath, strExtraFileName, nMaxRescords,
 			else
                 if "string" == type(v) then
                     local strOrgString = tostring(v)
-                    if ("string: \"" ~= string.sub(strOrgString, 1, 9)) or ("\"" ~= string.sub(strOrgString, -1)) then
+                    local nPattenBegin, nPattenEnd = string.find(strOrgString, "string: \".*\"")
+                    if ((not cDumpInfoResultsBase) and ((nil == nPattenBegin) or (nil == nPattenEnd))) then
                         local strRepString = string.gsub(strOrgString, "([\n\r])", "\\n")
                         cOutputer("string: \"" .. strRepString .. "\"\t" .. cNameInfo[v] .. "\t" .. tostring(cRefInfo[v]) .. "\n")
                     else
