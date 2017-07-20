@@ -123,7 +123,7 @@ local function CreateSingleObjectReferenceInfoContainer(strObjectName, cObject)
 
 	-- Init with object values.
 	cContainer.m_strObjectName = strObjectName
-	cContainer.m_strAddressName = GetOriginalToStringResult(cObject)
+	cContainer.m_strAddressName = (("string" == type(cObject)) and ("\"" .. tostring(cObject) .. "\"")) or GetOriginalToStringResult(cObject)
 	cContainer.m_cObjectExistTag[cObject] = true
 
 	return cContainer
@@ -597,6 +597,21 @@ local function CollectSingleObjectReferenceInMemory(strName, cObject, cDumpInfoC
 		if cMt then
 			CollectSingleObjectReferenceInMemory(strName ..".[userdata:metatable]", cMt, cDumpInfoContainer)
 		end
+    elseif "string" == strType then
+        -- Check if the specified object.
+        if cExistTag[cObject] and (not cNameAllAlias[strName]) then
+            cNameAllAlias[strName] = true
+        end
+
+        -- Add reference and name.
+        if cAccessTag[cObject] then
+            return
+        end
+
+        -- Get this name.
+        cAccessTag[cObject] = true
+    else
+        -- For "number" and "boolean" type, they are not object type, skip.
 	end
 end
 
