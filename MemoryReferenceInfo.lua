@@ -343,17 +343,26 @@ local function CollectObjectReferenceInMemory(strName, cObject, cDumpInfoContain
 		if cMt then
 			CollectObjectReferenceInMemory(strName ..".[userdata:metatable]", cMt, cDumpInfoContainer)
 		end
+    elseif "string" == strType then
+        -- Add reference and name.
+        cRefInfoContainer[cObject] = (cRefInfoContainer[cObject] and (cRefInfoContainer[cObject] + 1)) or 1
+        if cNameInfoContainer[cObject] then
+            return
+        end
+
+        -- Set name.
+        cNameInfoContainer[cObject] = strName .. "[" .. strType .. "]"
 	else
-		-- For "number", "string" and "boolean".
+		-- For "number" and "boolean". (If you want to dump them, uncomment the followed lines.)
 
-		-- Add reference and name.
-		cRefInfoContainer[cObject] = (cRefInfoContainer[cObject] and (cRefInfoContainer[cObject] + 1)) or 1
-		if cNameInfoContainer[cObject] then
-			return
-		end
+		-- -- Add reference and name.
+		-- cRefInfoContainer[cObject] = (cRefInfoContainer[cObject] and (cRefInfoContainer[cObject] + 1)) or 1
+		-- if cNameInfoContainer[cObject] then
+		-- 	return
+		-- end
 
-		-- Set name.
-		cNameInfoContainer[cObject] = strName .. "[" .. strType .. ":" .. tostring(cObject) .. "]"
+		-- -- Set name.
+		-- cNameInfoContainer[cObject] = strName .. "[" .. strType .. ":" .. tostring(cObject) .. "]"
 	end
 end
 
@@ -674,11 +683,15 @@ local function OutputMemorySnapshot(strSavePath, strExtraFileName, nMaxRescords,
 	end
 
 	cOutputer("--------------------------------------------------------\n")
-	cOutputer("-- [Table/Function Address/Name]\t[Reference Count]\n")
+	cOutputer("-- [Table/Function/String Address/Name]\t[Reference Path]\t[Reference Count]\n")
 	cOutputer("--------------------------------------------------------\n")
 
 	if strRootObjectName and cRootObject then
-		cOutputer("-- From Root Object: " .. GetOriginalToStringResult(cRootObject) .. " (" .. strRootObjectName .. ")\n")
+        if "string" == type(cRootObject) then
+            cOutputer("-- From Root Object: \"" .. tostring(cRootObject) .. "\" (" .. strRootObjectName .. ")\n")
+        else
+            cOutputer("-- From Root Object: " .. GetOriginalToStringResult(cRootObject) .. " (" .. strRootObjectName .. ")\n")
+        end
 	end
 
 	-- Save each info.
@@ -686,10 +699,22 @@ local function OutputMemorySnapshot(strSavePath, strExtraFileName, nMaxRescords,
 		if (not cDumpInfoResultsBase) or (not cRefInfoBase[v]) then
 			if (nMaxRescords > 0) then
 				if (i <= nMaxRescords) then
-					cOutputer(GetOriginalToStringResult(v) .. "\t" .. cNameInfo[v] .. "\t" .. tostring(cRefInfo[v]) .. "\n")
+                    if "string" == type(v) then
+                        local strOrgString = tostring(v)
+                        local strRepString = string.gsub(strOrgString, "([\n\r])", "\\n")
+                        cOutputer("string: \"" .. strRepString .. "\"\t" .. cNameInfo[v] .. "\t" .. tostring(cRefInfo[v]) .. "\n")
+                    else
+                        cOutputer(GetOriginalToStringResult(v) .. "\t" .. cNameInfo[v] .. "\t" .. tostring(cRefInfo[v]) .. "\n")
+                    end
 				end
 			else
-				cOutputer(GetOriginalToStringResult(v) .. "\t" .. cNameInfo[v] .. "\t" .. tostring(cRefInfo[v]) .. "\n")
+                if "string" == type(v) then
+                    local strOrgString = tostring(v)
+                    local strRepString = string.gsub(strOrgString, "([\n\r])", "\\n")
+                    cOutputer("string: \"" .. strRepString .. "\"\t" .. cNameInfo[v] .. "\t" .. tostring(cRefInfo[v]) .. "\n")
+				else
+                    cOutputer(GetOriginalToStringResult(v) .. "\t" .. cNameInfo[v] .. "\t" .. tostring(cRefInfo[v]) .. "\n")
+                end
 			end
 		end
 	end
