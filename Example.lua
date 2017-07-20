@@ -7,6 +7,21 @@
 
 local mri = require("MemoryReferenceInfo")
 
+mri.m_cConfig.m_bAllMemoryRefFileAddTime = false
+mri.m_cConfig.m_bSingleMemoryRefFileAddTime = false
+mri.m_cConfig.m_bComparedMemoryRefFileAddTime = false
+
+local person = 
+{
+    Name = "yaukeywang",
+    Job = "Game Developer",
+    Hobby = "Game, Travel, Gym",
+    City = "Beijing",
+    Ask = function (question)
+        return "My answer is for your question: " .. question .. "."
+    end
+}
+
 -- 打印当前 Lua 虚拟机的所有内存引用快照到文件(或者某个对象的所有引用信息快照)到本地文件。
 -- strSavePath - 快照保存路径，不包括文件名。
 -- strExtraFileName - 添加额外的信息到文件名，可以为 "" 或者 nil。
@@ -15,7 +30,12 @@ local mri = require("MemoryReferenceInfo")
 -- cRootObject - 遍历的根节点对象，默认为 nil 时使用 debug.getregistry()。
 -- MemoryReferenceInfo.m_cMethods.DumpMemorySnapshot(strSavePath, strExtraFileName, nMaxRescords, strRootObjectName, cRootObject)
 collectgarbage("collect")
-mri.m_cMethods.DumpMemorySnapshot("./", "AllMemoryRef", -1)
+mri.m_cMethods.DumpMemorySnapshot("./", "1", -1)
+
+_G.Person = person
+
+collectgarbage("collect")
+mri.m_cMethods.DumpMemorySnapshot("./", "2", -1)
 
 -- 打印当前 Lua 虚拟机中某一个对象的所有相关引用。
 -- strSavePath - 快照保存路径，不包括文件名。
@@ -25,7 +45,7 @@ mri.m_cMethods.DumpMemorySnapshot("./", "AllMemoryRef", -1)
 -- cObject - 对象实例。
 -- MemoryReferenceInfo.m_cMethods.DumpMemorySnapshotSingleObject(strSavePath, strExtraFileName, nMaxRescords, strObjectName, cObject)
 collectgarbage("collect")
-mri.m_cMethods.DumpMemorySnapshotSingleObject("./", "SingleObjRef", -1, "_G", _G)
+mri.m_cMethods.DumpMemorySnapshotSingleObject("./", "SingleObjRef", -1, "Person Name", "yaukeywang")
 
 -- 比较两份内存快照结果文件，打印文件 strResultFilePathAfter 相对于 strResultFilePathBefore 中新增的内容。
 -- strSavePath - 快照保存路径，不包括文件名。
@@ -34,7 +54,7 @@ mri.m_cMethods.DumpMemorySnapshotSingleObject("./", "SingleObjRef", -1, "_G", _G
 -- strResultFilePathBefore - 第一个内存快照文件。
 -- strResultFilePathAfter - 第二个用于比较的内存快照文件。
 -- MemoryReferenceInfo.m_cMethods.DumpMemorySnapshotComparedFile(strSavePath, strExtraFileName, nMaxRescords, strResultFilePathBefore, strResultFilePathAfter)
---mri.m_cMethods.DumpMemorySnapshotComparedFile("./", "Compared", -1, "./LuaMemRefInfo-All-[20170505-002343]-[AllMemoryRef].txt", "./LuaMemRefInfo-All-[20170505-002346]-[AllMemoryRef].txt")
+mri.m_cMethods.DumpMemorySnapshotComparedFile("./", "Compared", -1, "./LuaMemRefInfo-All-[1].txt", "./LuaMemRefInfo-All-[2].txt")
 
 -- 按照关键字过滤一个内存快照文件然后输出到另一个文件.
 -- strFilePath - 需要被过滤输出的内存快照文件。

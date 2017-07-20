@@ -5,6 +5,14 @@
 -- @author    WangYaoqi
 -- @date      2016-02-03
 
+-- The global config of the mri.
+local cConfig = 
+{
+    m_bAllMemoryRefFileAddTime = true,
+    m_bSingleMemoryRefFileAddTime = true,
+    m_bComparedMemoryRefFileAddTime = true
+}
+
 -- Get the format string of date time.
 local function FormatDateTimeNow()
 	local cDateTime = os.date("*t")
@@ -666,9 +674,33 @@ local function OutputMemorySnapshot(strSavePath, strExtraFileName, nMaxRescords,
 		-- Combine file name.
 		local strFileName = strSavePath .. "LuaMemRefInfo-All"
 		if (not strExtraFileName) or (0 == string.len(strExtraFileName)) then
-			strFileName = strFileName .. "-[" .. strDateTime .. "].txt"
+            if cDumpInfoResultsBase then
+                if cConfig.m_bComparedMemoryRefFileAddTime then
+                    strFileName = strFileName .. "-[" .. strDateTime .. "].txt"
+                else
+                    strFileName = strFileName .. ".txt"
+                end
+            else
+                if cConfig.m_bAllMemoryRefFileAddTime then
+                    strFileName = strFileName .. "-[" .. strDateTime .. "].txt"
+                else
+                    strFileName = strFileName .. ".txt"
+                end
+            end
 		else
-			strFileName = strFileName .. "-[" .. strDateTime .. "]-[" .. strExtraFileName .. "].txt"
+            if cDumpInfoResultsBase then
+                if cConfig.m_bComparedMemoryRefFileAddTime then
+                    strFileName = strFileName .. "-[" .. strDateTime .. "]-[" .. strExtraFileName .. "].txt"
+                else
+                    strFileName = strFileName .. "-[" .. strExtraFileName .. "].txt"
+                end
+            else
+                if cConfig.m_bAllMemoryRefFileAddTime then
+                    strFileName = strFileName .. "-[" .. strDateTime .. "]-[" .. strExtraFileName .. "].txt"
+                else
+                    strFileName = strFileName .. "-[" .. strExtraFileName .. "].txt"
+                end
+            end
 		end
 
 		local cFile = assert(io.open(strFileName, "w"))
@@ -779,9 +811,17 @@ local function OutputMemorySnapshotSingleObject(strSavePath, strExtraFileName, n
 		-- Combine file name.
 		local strFileName = strSavePath .. "LuaMemRefInfo-Single"
 		if (not strExtraFileName) or (0 == string.len(strExtraFileName)) then
-			strFileName = strFileName .. "-[" .. strDateTime .. "].txt"
+            if cConfig.m_bSingleMemoryRefFileAddTime then
+                strFileName = strFileName .. "-[" .. strDateTime .. "].txt"
+            else
+                strFileName = strFileName .. ".txt"
+            end
 		else
-			strFileName = strFileName .. "-[" .. strDateTime .. "]-[" .. strExtraFileName .. "].txt"
+            if cConfig.m_bSingleMemoryRefFileAddTime then
+                strFileName = strFileName .. "-[" .. strDateTime .. "]-[" .. strExtraFileName .. "].txt"
+            else
+                strFileName = strFileName .. "-[" .. strExtraFileName .. "].txt"
+            end
 		end
 
 		local cFile = assert(io.open(strFileName, "w"))
@@ -987,7 +1027,9 @@ local function DumpMemorySnapshotSingleObject(strSavePath, strExtraFileName, nMa
 end
 
 -- Return methods.
-local cPublications = {m_cMethods = {}, m_cHelpers = {}, m_cBases = {}}
+local cPublications = {m_cConfig = nil, m_cMethods = {}, m_cHelpers = {}, m_cBases = {}}
+
+cPublications.m_cConfig = cConfig
 
 cPublications.m_cMethods.DumpMemorySnapshot = DumpMemorySnapshot
 cPublications.m_cMethods.DumpMemorySnapshotCompared = DumpMemorySnapshotCompared
