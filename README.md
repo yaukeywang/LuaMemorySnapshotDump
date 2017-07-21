@@ -17,7 +17,7 @@ First of all, you need to require `MemoryReferenceInfo.lua` in your file, like:
 local mri = require(MemoryReferenceInfo)
 ```
 
-Next step, you need to dump the lua memory snapshot at first time in somwhere:
+Next step, you need to dump the lua memory snapshot at first time somewhere:
 
 ```lua
 -- Before dumping, collect garbage first.
