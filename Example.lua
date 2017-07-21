@@ -77,4 +77,4 @@ mri.m_cBases.OutputFilteredResult("./LuaMemRefInfo-All-[2-After].txt", "Author",
 mri.m_cBases.OutputFilteredResult("./LuaMemRefInfo-All-[2-After].txt", "Author", false, true)
 
 -- All dump finished!
-print("Dump memory information ok!")
+print("Dump memory snapshot information finished!")
