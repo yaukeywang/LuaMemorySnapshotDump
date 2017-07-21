@@ -53,7 +53,7 @@ mri.m_cMethods.DumpMemorySnapshot("./", "2-After", -1)
 
 ```
 
-Now, you have two files stored in your current directory, named: ```LuaMemRefInfo-All-[1-Before]``` and ```LuaMemRefInfo-All-[2-After].txt```.
+Now, you have two files stored in your current directory, named: ```LuaMemRefInfo-All-[1-Before].txt``` and ```LuaMemRefInfo-All-[2-After].txt```.
 
 Then, you can now compare the two files to see the increased data:
 
