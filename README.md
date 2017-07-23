@@ -26,7 +26,7 @@ mri.m_cMethods.DumpMemorySnapshot("./", "1-Before", -1)
 
 ```
 
-By default, ```DumpMemorySnapshot``` will output a txt file whose name is suffixed with current time stamp in order to dump file continuously whihout modifying the file name manually, but you can disable time stamp suffix by setting the config:
+By default, ```DumpMemorySnapshot``` will output a txt file whose name is suffixed with current time stamp in order to dump file continuously without modifying the file name manually each time you dump, but you can disable time stamp suffix by setting the config:
 
 ```lua
 
