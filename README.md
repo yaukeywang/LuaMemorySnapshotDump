@@ -116,3 +116,7 @@ mri.m_cMethods.DumpMemorySnapshot("./", "1-Before", -1, "_G", _G)
 ```
 
 It will only dump the memory snapshot in "_G".
+
+## Note
+
+In order to display the ```"string"``` type in single line by dumping output result, all the value ```'\r'```, ```'\n'``` are replaced by the "real" character: ```'\\n'```.
