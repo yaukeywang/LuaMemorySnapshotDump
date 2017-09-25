@@ -83,14 +83,13 @@ local function CreateObjectReferenceInfoContainerFromFile(strFilePath)
 	local cNameInfo = cContainer.m_cObjectAddressToName
 
 	-- Read each line from file.
-	local strHeader = nil
-	local strAddr = nil
-	local strName = nil
-	local strRefCount = nil
-	for strLine in io.lines(strFilePath) do
+	local _, _, strHeader,strAddr,strName,strRefCount
+	local f = io.open(strFilePath, "rb")
+	for strLine in f:lines() do
 		strHeader = string.sub(strLine, 1, 2)
 		if "--" ~= strHeader then
-			local _, _, strAddr, strName, strRefCount = string.find(strLine, "(.+)\t(.*)\t(%d+)")
+			_, _, strAddr, strName, strRefCount= string.find(strLine, "(.+)\t(.*)\t(%d+)")
+
 			if strAddr then
 				cRefInfo[strAddr] = strRefCount
 				cNameInfo[strAddr] = strName
@@ -115,7 +114,7 @@ local function CreateSingleObjectReferenceInfoContainer(strObjectName, cObject)
 	-- Contain [name] - [true] info.
 	local cObjectAliasName = {}
 
-	-- Contain [address] - [true] info.
+	-- Contain [access] - [true] info.
 	local cObjectAccessTag = {}
 	setmetatable(cObjectAccessTag, {__mode = "k"})
 
@@ -661,7 +660,7 @@ local function OutputMemorySnapshot(strSavePath, strExtraFileName, nMaxRescords,
 
 	-- Save result to file.
 	local bOutputFile = strSavePath and (string.len(strSavePath) > 0)
-	local cOutputHandle = nil
+	local cOutputHandle
 	local cOutputEntry = print
 	
 	if bOutputFile then
@@ -800,7 +799,7 @@ local function OutputMemorySnapshotSingleObject(strSavePath, strExtraFileName, n
 
 	-- Save result to file.
 	local bOutputFile = strSavePath and (string.len(strSavePath) > 0)
-	local cOutputHandle = nil
+	local cOutputHandle
 	local cOutputEntry = print
 	
 	if bOutputFile then
@@ -902,7 +901,7 @@ local function OutputFilteredResult(strFilePath, strFilter, bIncludeFilter, bOut
 	end
 
 	-- Write filtered result.
-	local cOutputHandle = nil
+	local cOutputHandle
 	local cOutputEntry = print
 
 	if bOutputFile then
