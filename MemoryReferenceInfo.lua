@@ -83,19 +83,21 @@ local function CreateObjectReferenceInfoContainerFromFile(strFilePath)
 	local cNameInfo = cContainer.m_cObjectAddressToName
 
 	-- Read each line from file.
-	local _, _, strHeader,strAddr,strName,strRefCount
-	local f = io.open(strFilePath, "rb")
-	for strLine in f:lines() do
-		strHeader = string.sub(strLine, 1, 2)
+	local cFile = assert(io.open(strFilePath, "rb"))
+	for strLine in cFile:lines() do
+		local strHeader = string.sub(strLine, 1, 2)
 		if "--" ~= strHeader then
-			_, _, strAddr, strName, strRefCount= string.find(strLine, "(.+)\t(.*)\t(%d+)")
-
+			local _, _, strAddr, strName, strRefCount= string.find(strLine, "(.+)\t(.*)\t(%d+)")
 			if strAddr then
 				cRefInfo[strAddr] = strRefCount
 				cNameInfo[strAddr] = strName
 			end
 		end
 	end
+
+    -- Close and clear file handler.
+    io.close(cFile)
+    cFile = nil
 
 	return cContainer
 end
@@ -660,7 +662,7 @@ local function OutputMemorySnapshot(strSavePath, strExtraFileName, nMaxRescords,
 
 	-- Save result to file.
 	local bOutputFile = strSavePath and (string.len(strSavePath) > 0)
-	local cOutputHandle
+	local cOutputHandle = nil
 	local cOutputEntry = print
 	
 	if bOutputFile then
@@ -777,6 +779,7 @@ local function OutputMemorySnapshot(strSavePath, strExtraFileName, nMaxRescords,
 
 	if bOutputFile then
 		io.close(cOutputHandle)
+        cOutputHandle = nil
 	end
 end
 
@@ -799,7 +802,7 @@ local function OutputMemorySnapshotSingleObject(strSavePath, strExtraFileName, n
 
 	-- Save result to file.
 	local bOutputFile = strSavePath and (string.len(strSavePath) > 0)
-	local cOutputHandle
+	local cOutputHandle = nil
 	local cOutputEntry = print
 	
 	if bOutputFile then
@@ -866,6 +869,7 @@ local function OutputMemorySnapshotSingleObject(strSavePath, strExtraFileName, n
 
 	if bOutputFile then
 		io.close(cOutputHandle)
+        cOutputHandle = nil
 	end
 end
 
@@ -887,21 +891,36 @@ local function OutputFilteredResult(strFilePath, strFilter, bIncludeFilter, bOut
 
 	-- Read file.
 	local cFilteredResult = {}
-	for strLine in io.lines(strFilePath) do
+    local cReadFile = assert(io.open(strFilePath, "rb"))
+	for strLine in cReadFile:lines() do
 		local nBegin, nEnd = string.find(strLine, strFilter)
 		if nBegin and nEnd then
 			if bIncludeFilter then
-				table.insert(cFilteredResult, strLine)
+                nBegin, nEnd = string.find(strLine, "[\r\n]")
+                if nBegin and nEnd  and (string.len(strLine) == nEnd) then
+                    table.insert(cFilteredResult, string.sub(strLine, 1, nBegin - 1))
+                else
+				    table.insert(cFilteredResult, strLine)
+                end
 			end
 		else
 			if not bIncludeFilter then
-				table.insert(cFilteredResult, strLine)
+                nBegin, nEnd = string.find(strLine, "[\r\n]")
+                if nBegin and nEnd and (string.len(strLine) == nEnd) then
+                    table.insert(cFilteredResult, string.sub(strLine, 1, nBegin - 1))
+                else
+				    table.insert(cFilteredResult, strLine)
+                end
 			end
 		end
 	end
 
+    -- Close and clear read file handle.
+    io.close(cReadFile)
+    cReadFile = nil
+
 	-- Write filtered result.
-	local cOutputHandle
+	local cOutputHandle = nil
 	local cOutputEntry = print
 
 	if bOutputFile then
@@ -929,6 +948,7 @@ local function OutputFilteredResult(strFilePath, strFilter, bIncludeFilter, bOut
 
 	if bOutputFile then
 		io.close(cOutputHandle)
+        cOutputHandle = nil
 	end
 end
 
