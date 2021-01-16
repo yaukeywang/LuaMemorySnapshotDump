@@ -857,7 +857,7 @@ local function OutputMemorySnapshotSingleObject(strSavePath, strExtraFileName, n
 	cOutputer("--------------------------------------------------------\n")
 
 	-- Save each info.
-	for k in pairs(cObjectAliasName) do
+	for i, k in pairs(cObjectAliasName) do
 		if (nMaxRescords > 0) then
 			if (i <= nMaxRescords) then
 				cOutputer(k .. "\n")
