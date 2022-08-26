@@ -201,12 +201,10 @@ local function CollectObjectReferenceInMemory(strName, cObject, cDumpInfoContain
 			-- Check mode.
 			local strMode = rawget(cMt, "__mode")
 			if strMode then
-				if "k" == strMode then
+				if string.find(strMode, "k") then
 					bWeakK = true
-				elseif "v" == strMode then
-					bWeakV = true
-				elseif "kv" == strMode then
-					bWeakK = true
+				end
+				if string.find(strMode, "v") then
 					bWeakV = true
 				end
 			end
