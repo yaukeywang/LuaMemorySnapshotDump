@@ -497,7 +497,7 @@ local function CollectSingleObjectReferenceInMemory(strName, cObject, cDumpInfoC
 					CollectSingleObjectReferenceInMemory(strName .. ".[table:value]", v, cDumpInfoContainer)
 				end
 			else
-				CollectSingleObjectReferenceInMemory(strName .. "." .. k, v, cDumpInfoContainer)
+				CollectSingleObjectReferenceInMemory(strName .. "." .. tostring(k), v, cDumpInfoContainer)
 			end
 		end
 
@@ -858,10 +858,10 @@ local function OutputMemorySnapshotSingleObject(strSavePath, strExtraFileName, n
 	for i, k in pairs(cObjectAliasName) do
 		if (nMaxRescords > 0) then
 			if (i <= nMaxRescords) then
-				cOutputer(k .. "\n")
+				cOutputer(tostring(k) .. "\n")
 			end
 		else
-			cOutputer(k .. "\n")
+			cOutputer(tostring(k) .. "\n")
 		end
 	end
 
